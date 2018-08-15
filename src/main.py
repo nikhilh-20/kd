@@ -8,6 +8,10 @@ from key_dy_init import key_dy_init
 key_dy_obj = key_dy_init()
 
 def keyAffinityMatch(keyAffinity, Users=[], identityOrder=[], keyAffinityOfUsers=[]):
+    """
+
+    """
+
     identityOrder_Affinity = []
     identity_rank = []
     not_found = []
@@ -33,6 +37,9 @@ def keyAffinityMatch(keyAffinity, Users=[], identityOrder=[], keyAffinityOfUsers
     return identity_rank
 
 def findUserMatch(keyAffinity, Users=[], keyAffinityOfUsers=[], checkDwellValue=[], checkFlightValue=[], dwellScore={}, flightScore={}):
+    """
+
+    """
 
     score = {}
     score2 = {}
@@ -62,6 +69,21 @@ def findUserMatch(keyAffinity, Users=[], keyAffinityOfUsers=[], checkDwellValue=
         print ("Rank " + str(name_index) + ": " + str(identity_order[name_index]))
 
 def findHits(inputType, templateMean=[], templateDeviation=[], featureInput=[]):
+    """
+    Finds character-by-character matches
+
+    Args:
+        inputType        : dwell | flight
+        templateMean     : The inputType timing sample list of templates
+        templateDeviation: The inputType standard deviation list of templates
+        featureInput     : The user input timing sample list
+    Raises:
+        None
+    Returns:
+        checkValue:
+        scoreDict :
+    """
+
     sumValues = 0.0
     scoreDict = {}
     checkValue = [0] * len(templateMean)
@@ -85,7 +107,20 @@ def findHits(inputType, templateMean=[], templateDeviation=[], featureInput=[]):
 
     return (checkValue, scoreDict)
 
-def findMatch(action, keyAffinity, dwell=[], flight=[]):
+def findMatch(keyAffinity, dwell=[], flight=[]):
+    """
+    Finds matches character-by-character and then calculates a list of users indecreasing order of probability
+
+    Args:
+        keyAffinity: flag which differentiates between usage of caps-lock and shift keys
+        dwell      : dwell-time samples list
+        flight     : flight-time samples list
+    Raises:
+        Exception - sometimes when two keys are pressed at the same time, I'm not able to collect accurate timing data
+    Returns:
+        None
+    """
+
     if (len(dwell) != key_dy_obj.dwellLength or len(flight) != key_dy_obj.flightLength):
         raise Exception ("Weird... I couldn't extract the information I need. Please retry.")
 
@@ -134,6 +169,20 @@ def findMatch(action, keyAffinity, dwell=[], flight=[]):
     findUserMatch(keyAffinity, Users, keyAffinity_ofUser, checkDwellValue, checkFlightValue, scoreDwellDict, scoreFlightDict)
 
 def storeParams(user, keyAffinity, dwell = [] , flight = []):
+    """
+    Stores the user's timing samples as well as their key-affinity flag value
+
+    Args:
+        user       : name of the user who's training the system (to be used only while training)
+        keyAffinity: flag which differentiates between usage of caps-lock and shift keys
+        dwell      : dwell-time samples list
+        flight     : flight-time samples list
+    Raises:
+        Exception - sometimes when two keys are pressed at the same time, I'm not able to collect accurate timing data
+    Returns:
+        None
+    """
+
     if (len(dwell) != key_dy_obj.dwellLength or len(flight) != key_dy_obj.flightLength):
         raise Exception ("Weird... I couldn't extract the information I need. Please retry.")
 
@@ -156,10 +205,31 @@ def storeParams(user, keyAffinity, dwell = [] , flight = []):
     print ("X, Y values stored for %s"  % user)
 
 def checkPassword(inPassword):
+    """
+    Verify the correctness of the user-input password
+
+    Args:
+        inPassword: user-input password
+    Raises:
+        Exception - If the password is incorrect
+    Returns:
+        None
+    """
+
     if (key_dy_obj.password != inPassword):
         raise Exception ('Incorrect password!')
 
 def getch():
+    """
+    Opens a pygame window where the user types the password. The timing samples are determined at the same time
+
+    Args:
+    Raises:
+        None
+    Returns:
+        Tuple - (input-string-password, key-affinity-flag-value, flight-timing-sample-list, dwell-timing-sample-list)
+    """
+
     time_elapsed = pygame.time.get_ticks()
     time_down = 0.0
     time_down_1 = 0.0
@@ -201,28 +271,57 @@ def getch():
         pygame.display.update()
 
 def flightDwellTest(action, user, keyAffinity):
-        key_dy_obj.user = user
-        # These blocks control whether the script is in training mode or test mode
-        # depending on the arguments passed to the script
-        if (action == 'train'):
-            username = user
-            storeParams(username, keyAffinity, key_dy_obj.dwell_elapsed , key_dy_obj.flight_elapsed)
-        else:
-            findMatch(action, keyAffinity, key_dy_obj.dwell_elapsed , key_dy_obj.flight_elapsed)
+    """
+    Branches the code flow depending on the action
+
+    Args:
+        action     : test | train
+        user       : the name of the user who's training the system (to be used only while training)
+        keyAffinity: the flag which differentiates between usage of caps-lock and shift keys
+    Raises:
+    Returns:
+        None
+    """
+    key_dy_obj.user = user
+    # These blocks control whether the script is in training mode or test mode
+    # depending on the arguments passed to the script
+    if (action == 'train'):
+        username = user
+        storeParams(username, keyAffinity, key_dy_obj.dwell_elapsed , key_dy_obj.flight_elapsed)
+    else:
+        findMatch(keyAffinity, key_dy_obj.dwell_elapsed , key_dy_obj.flight_elapsed)
 
 def captureKey(action, user):
+    """
+    Captures user input, verifies correctness of the password
+
+    Args:
+        action: test | train
+        user  : the name of the user who's training the system (to be used only while training)
+    Raises:
+        Exception - If incorrect 'action' value was provided
+    Returns:
+        None
+    """
+
     if action != 'train' and action != 'test':
-        raise Exception ('Incorrect action type. Exiting...')
+        raise Exception ('Incorrect \'action\' value. Exiting...')
 
     (key_dy_obj.inputstr, keyAffinity, key_dy_obj.flight_elapsed, key_dy_obj.dwell_elapsed) = getch();
-
-    print (key_dy_obj.dwell_elapsed)
-    print (key_dy_obj.flight_elapsed)
 
     checkPassword(key_dy_obj.inputstr)
     flightDwellTest(action, user, keyAffinity)
 
 def main():
+    """
+    main function - starting point to this script
+
+    Args:
+    Raises:
+    Returns:
+        None
+    """
+
     if (key_dy_obj.args.b_testing):
         keyAffinity = 2
         action = 'test'
