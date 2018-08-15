@@ -11,7 +11,7 @@ args = parser.parse_args()
 def openFile(filename, file_path):
     if (args.debug):
         print ("openDwellFile")
-    with open (file_path + '/../benchmark/' + filename , 'rt') as f:
+    with open (file_path + '../benchmark/' + filename , 'rt') as f:
         reader = csv.reader(f)
         dwellTime = list(reader)
     return dwellTime
@@ -30,17 +30,17 @@ def writeToFile(typeIs, arrMean=[], arrDeviation=[]):
         print ("writeToFile")
     file_path = str(os.getcwd())
     if (typeIs == 'dwell'):
-        with open(file_path + '/../benchmark/dwellMean.csv' , 'a') as f:
+        with open(file_path + '../benchmark/dwellMean.csv' , 'a') as f:
             writer = csv.writer(f)
             writer.writerow(arrMean)
-        with open(file_path + '/../benchmark/dwellDeviation.csv' , 'a') as f:
+        with open(file_path + '../benchmark/dwellDeviation.csv' , 'a') as f:
             writer = csv.writer(f)
             writer.writerow(arrDeviation)
     else:
-        with open(file_path + '/../benchmark/flightMean.csv' , 'a') as f:
+        with open(file_path + '../benchmark/flightMean.csv' , 'a') as f:
             writer = csv.writer(f)
             writer.writerow(arrMean)
-        with open(file_path + '/../benchmark/flightDeviation.csv' , 'a') as f:
+        with open(file_path + '../benchmark/flightDeviation.csv' , 'a') as f:
             writer = csv.writer(f)
             writer.writerow(arrDeviation)
 
@@ -138,7 +138,7 @@ def main():
 
     #files = [f for f in os.listdir('.') if os.path.isfile(f)]
     file_path = os.getcwd()
-    files = os.listdir(file_path + '/../benchmark')
+    files = os.listdir(file_path + '../benchmark')
     dwell_files = DwellFile(files)
     flight_files = FlightFile(files)
 

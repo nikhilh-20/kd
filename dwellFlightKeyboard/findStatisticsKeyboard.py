@@ -1,3 +1,4 @@
+from __future__ import division
 import csv, math
 
 password = '.zoroBen1'
@@ -22,17 +23,17 @@ def formatArray(arr=[]):
 def writeToFile(typeIs, arrMean=[], arrDeviation=[]):
     print ("writeToFile")
     if (typeIs == 'dwell'):
-        with open('../dwellFlightKeyboard/dwellMean.csv' , 'a') as f:
+        with open('dwellMean.csv' , 'a') as f:
             writer = csv.writer(f)
             writer.writerow(arrMean)
-        with open('../dwellFlightKeyboard/dwellDeviation.csv' , 'a') as f:
+        with open('dwellDeviation.csv' , 'a') as f:
             writer = csv.writer(f)
             writer.writerow(arrDeviation)
     else:
-        with open('../dwellFlightKeyboard/flightMean.csv' , 'a') as f:
+        with open('flightMean.csv' , 'a') as f:
             writer = csv.writer(f)
             writer.writerow(arrMean)
-        with open('../dwellFlightKeyboard/flightDeviation.csv' , 'a') as f:
+        with open('flightDeviation.csv' , 'a') as f:
             writer = csv.writer(f)
             writer.writerow(arrDeviation)
 
@@ -109,14 +110,14 @@ def main():
     buildMeanFlightArr = []
     buildDeviationFlightArr = []
 
-    dwellTime = openFile('../dwellFlightKeyboard/dwell_Time_nikhilh.csv')
+    dwellTime = openFile('dwell_Time_nikhilh.csv')
     dwellTime = formatArray(dwellTime)
     for index in range(0, passLen+1):
         (mean, deviation) = findMode(index, 'dwell', dwellTime)
         buildMeanDwellArr.append(mean)
         buildDeviationDwellArr.append(deviation)
 
-    flightTime = openFile('../dwellFlightKeyboard/flight_Time_nikhilh.csv')
+    flightTime = openFile('flight_Time_nikhilh.csv')
     flightTime = formatArray(flightTime)
     for index in range(0, passLen):
         (mean, deviation) = findMode(index, 'flight', flightTime)
